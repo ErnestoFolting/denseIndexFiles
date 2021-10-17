@@ -12,7 +12,7 @@ void createMainFile(int number) {
 			cout << 25 + rand() % 65 << endl;
 			value += char(65 + rand() % 25);
 		}
-		outFile << i << "," << value << endl;
+		outFile << i << "," << value << 0 << endl;
 	}
 	outFile.close();
 }
