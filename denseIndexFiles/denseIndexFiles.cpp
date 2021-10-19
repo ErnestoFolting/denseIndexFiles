@@ -5,7 +5,7 @@
 #include <ctime>
 #include <vector>
 using namespace std;
-int numberValues = 10;
+int numberValues = 11;
 int numberInBlock = 1;
 void createMainFile(int number) {
 	ofstream outFile("main.txt");
@@ -25,6 +25,7 @@ void indexFile() {
 	string temp;
 	int number = 0;
 	vector<vector<string>> blocks(10);
+	vector<string> overflow;
 	while (inFile >> temp) {
 		cout << temp << endl;
 		int posComa = temp.find(',');
@@ -35,7 +36,13 @@ void indexFile() {
 		temp.erase(0, posComa + 1);
 		bool isNotDeleted = stoi(temp);
 		string tempNameFile = to_string(key) + ".txt";
-		blocks[number % 10].push_back(to_string(key) + ',' + to_string(number));
+		int blockToPaste = number % 10;
+		if (blocks[blockToPaste].size() < numberInBlock) {
+			blocks[blockToPaste].push_back(to_string(key) + ',' + to_string(number));
+		}
+		else {
+			overflow.push_back(to_string(key) + ',' + to_string(number));
+		}
 		number++;
 	}
 	inFile.close();
@@ -46,6 +53,12 @@ void indexFile() {
 		}
 		outFile << endl;
 	}
+	outFile.close();
+	ofstream outFileOver("overflow.txt", ofstream::app);
+	for (int i = 0; i < overflow.size();i++) {
+		outFileOver << overflow[i] << endl;
+	}
+	outFileOver.close();
 }
 int main()
 {
