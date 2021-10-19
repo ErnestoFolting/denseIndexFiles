@@ -7,11 +7,52 @@
 using namespace std;
 int numberValues = 90;
 int numberInBlock = 10;
-
+int blocks = 10;
+int currentElements = 0;
+vector<vector<string>> getIndex() {
+	vector<vector<string>> vec(blocks);
+	ifstream inFile("index.txt");
+	string temp;
+	int block = 0;
+	while (inFile >> temp) {
+		if (temp == "-") {
+			block++;
+		}
+		else {
+			vec[block].push_back(temp);
+		}
+	}
+	inFile.close();
+	return vec;
+}
+vector<string> getMain() {
+	vector<string> vec;
+	ifstream inFile("main.txt");
+	string temp;
+	int block = 0;
+	while (inFile >> temp) {
+		vec.push_back(temp);
+	}
+	return vec;
+}
 void inputKey() {
 	cout << "Input the data you want to add " << endl;
 	string data;
 	cin >> data;
+	vector<vector<string>> index = getIndex();
+	vector<string> main = getMain();
+	index[currentElements % 10].push_back(to_string(currentElements) + ',' + to_string(main.size()));
+	ofstream outFile("main.txt", ofstream::app);
+	outFile << to_string(currentElements) << "," << data << "," << "1" << endl;
+	outFile.close();
+	ofstream outFile1("index.txt");
+	for (int i = 0; i < index.size();i++) {
+		for (int j = 0; j < index[i].size(); j++) {
+			outFile1 << index[i][j] << endl;
+		}
+		outFile1 << "-" << endl;
+	}
+	currentElements++;
 }
 void deleteKey() {
 	cout << "Input the key you want to delete" << endl;
@@ -55,6 +96,7 @@ void createMainFile(int number) {
 			value += char(65 + rand() % 25);
 		}
 		outFile << i << "," << value << "," << 1 << endl;
+		currentElements++;
 	}
 	outFile.close();
 }
@@ -64,7 +106,7 @@ void indexFile() {
 	ifstream inFile("main.txt");
 	string temp;
 	int number = 0;
-	vector<vector<string>> blocks(10);
+	vector<vector<string>> blocks(blocks);
 	vector<string> overflow;
 	while (inFile >> temp) {
 		int posComa = temp.find(',');
