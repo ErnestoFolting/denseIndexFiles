@@ -3,8 +3,10 @@
 #include <string>
 #include <iomanip>
 #include <ctime>
+#include <vector>
 using namespace std;
-
+int numberValues = 10;
+int numberInBlock = 1;
 void createMainFile(int number) {
 	ofstream outFile("main.txt");
 	for (int i = 0; i < number; i++) {
@@ -17,9 +19,12 @@ void createMainFile(int number) {
 	outFile.close();
 }
 void indexFile() {
+	ofstream clearFile("index.txt");
+	clearFile.close();
 	ifstream inFile("main.txt");
 	string temp;
 	int number = 0;
+	vector<vector<string>> blocks(10);
 	while (inFile >> temp) {
 		cout << temp << endl;
 		int posComa = temp.find(',');
@@ -30,16 +35,22 @@ void indexFile() {
 		temp.erase(0, posComa + 1);
 		bool isNotDeleted = stoi(temp);
 		string tempNameFile = to_string(key) + ".txt";
-		ofstream outFile(tempNameFile);
-		outFile << key << "," << number << endl;
+		blocks[number % 10].push_back(to_string(key) + ',' + to_string(number));
 		number++;
 	}
 	inFile.close();
+	ofstream outFile("index.txt", ofstream::app);
+	for (int i = 0; i < blocks.size(); i++) {
+		for (int j = 0; j < blocks[i].size(); j++) {
+			outFile << blocks[i][j] << endl;
+		}
+		outFile << endl;
+	}
 }
 int main()
 {
 	srand(time(NULL));
-	createMainFile(10);
+	createMainFile(numberValues);
 	indexFile();
 }
 
