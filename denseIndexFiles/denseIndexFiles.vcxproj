@@ -139,7 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="dataBase.cpp" />
     <ClCompile Include="denseIndexFiles.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dataBase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
