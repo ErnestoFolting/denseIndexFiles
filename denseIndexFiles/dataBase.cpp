@@ -127,7 +127,7 @@ void dataBase::inputKey() {
 	else {
 		overflow.push_back(to_string(currentElements) + ',' + to_string(main.size()));
 		ofstream fileOverflow("overflow.txt", ofstream::app);
-		fileOverflow << to_string(currentElements) + ',' + to_string(main.size());
+		fileOverflow << to_string(currentElements) + ',' + to_string(main.size()) << endl;
 		fileOverflow.close();
 	}
 	
@@ -140,15 +140,28 @@ void dataBase::inputKey() {
 
 void dataBase::deleteKey() {
 	cout << "Input the key you want to delete" << endl;
-	string data;
+	int data;
 	cin >> data;
+	if (data < 0 || data >= currentElements) {
+		cout << "Unfortunately, this database do not have this element";
+	}
+	else {
+		vector<string> blockToDelete = index[data % 10];
 
+	}
 }
 
 void dataBase::findKey() {
-	cout << "Input the key you want to find" << endl;
-	string data;
+	cout << "Input the key you want to delete" << endl;
+	int data;
 	cin >> data;
+	if (data < 0 || data >= currentElements) {
+		cout << "Unfortunately, this database do not have this element";
+	}
+	else {
+		vector<string> blockToFind = index[data % 10];
+
+	}
 
 }
 

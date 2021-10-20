@@ -32,6 +32,7 @@ struct dataBase
 		getMain();
 		getOverflow();
 		currentElements = main.size();
+		UI();
 	}
 	dataBase(int values) {
 		numberValues = values;
@@ -41,7 +42,7 @@ struct dataBase
 		indexFile();
 		getOverflow();
 		getIndex();
-		cout << index[0][0];
+		UI();
 	}
 };
 
