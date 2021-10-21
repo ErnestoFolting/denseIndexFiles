@@ -37,9 +37,5 @@ using namespace std;
 int main()
 {
 	dataBase db;
-	/*
-	printFiles();
-	
-	}*/
 }
 

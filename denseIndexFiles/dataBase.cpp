@@ -116,6 +116,16 @@ void dataBase::overflowUpdate()
 
 //-----------------------------MAIN ACTIONS WITH KEYS-----------------------------------------------
 
+double logbase(double a, double base)
+{
+	return log(a) / log(base);
+}
+int getKey(string temp) {
+	int comaPos = temp.find(",");
+	int key = stoi(temp.substr(0, comaPos + 1));
+	return key;
+}
+
 void dataBase::inputKey() {
 	cout << "Input the data you want to add " << endl;
 	string data;
@@ -147,7 +157,8 @@ void dataBase::deleteKey() {
 	}
 	else {
 		vector<string> blockToDelete = index[data % 10];
-
+		cout << blockToDelete[0] << endl;
+		cout << getKey(blockToDelete[0]) << endl;
 	}
 }
 
