@@ -157,8 +157,7 @@ void dataBase::deleteKey() {
 	}
 	else {
 		vector<string> blockToDelete = index[data % 10];
-		cout << blockToDelete[0] << endl;
-		cout << getKey(blockToDelete[0]) << endl;
+		 
 	}
 }
 
@@ -171,7 +170,56 @@ void dataBase::findKey() {
 	}
 	else {
 		vector<string> blockToFind = index[data % 10];
-
+		int k = (int)logbase(blockToFind.size(), 2);
+		int i = pow(2,k );
+		if (data < getKey(blockToFind[i])) {
+			int iterator = 1;
+			int b = pow(2, k - iterator);
+			while (b != 0) {
+				iterator++;
+				if (data < getKey(blockToFind[i])) {
+					i = i - ((int)(b / 2) + 1);
+					b = pow(2, k - iterator);
+				}
+				else if (data > getKey(blockToFind[i])) {
+					i += (int)(b / 2) + 1;
+					b = pow(2, k - iterator);
+				}
+				else if(data == getKey(blockToFind[i])) {
+					cout << i << endl;
+					cout << "We have found the element" << endl;
+					break;
+				}
+			}
+		}
+		else if (data == getKey(blockToFind[i])){
+			cout << i << endl;
+			cout << "We have found the element" << endl;
+		}
+		else {
+			if (blockToFind.size() > pow(2, k)) {
+				int l = (int)logbase(blockToFind.size() - pow(2, k) + 1, 2);
+				i = blockToFind.size() + l - pow(2, l);
+				int iterator = 1;
+				int b = pow(2, l - iterator);
+				while (b != 0) {
+					iterator++;
+					if (data > getKey(blockToFind[i])) {
+						i += (int)(b / 2) + 1;
+						b = pow(2, l - iterator);
+					}
+					else if (data < getKey(blockToFind[i])) {
+						i -= ((int)(b / 2) + 1);
+						b = pow(2, l - iterator);
+					}
+					else if (data == getKey(blockToFind[i])) {
+						cout << i << endl;
+						cout << "We have found the element" << endl;
+						break;
+					}
+				}
+			}
+		}
 	}
 
 }
