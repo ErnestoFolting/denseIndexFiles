@@ -160,68 +160,75 @@ void dataBase::deleteKey() {
 		 
 	}
 }
-
-void dataBase::findKey() {
-	cout << "Input the key you want to delete" << endl;
-	int data;
-	cin >> data;
-	if (data < 0 || data >= currentElements) {
-		cout << "Unfortunately, this database do not have this element";
+int Sharr(vector<string> blockToFind, int data) {
+	int k = (int)logbase(blockToFind.size(), 2);
+	int i = pow(2, k);
+	if (data < getKey(blockToFind[i])) {
+		int iterator = 1;
+		int b = pow(2, k - iterator);
+		while (data != getKey(blockToFind[i])) {
+			iterator++;
+			if (data < getKey(blockToFind[i])) {
+				i = i - ((int)(b / 2) + 1);
+				b = pow(2, k - iterator);
+			}
+			else if (data > getKey(blockToFind[i])) {
+				i += (int)(b / 2) + 1;
+				b = pow(2, k - iterator);
+			}
+			if (iterator >= blockToFind.size()) {
+				return -1;
+				break;
+			}
+		}
+		if (data == getKey(blockToFind[i])) {
+			return i;
+		}
+	}
+	else if (data == getKey(blockToFind[i])) {
+		return i;
 	}
 	else {
-		vector<string> blockToFind = index[data % 10];
-		int k = (int)logbase(blockToFind.size(), 2);
-		int i = pow(2,k );
-		if (data < getKey(blockToFind[i])) {
+		if (blockToFind.size() > pow(2, k)) {
+			int l = (int)logbase(blockToFind.size() - pow(2, k) + 1, 2);
+			i = blockToFind.size() + l - pow(2, l);
 			int iterator = 1;
-			int b = pow(2, k - iterator);
+			int b = pow(2, l - iterator);
 			while (b != 0) {
 				iterator++;
-				if (data < getKey(blockToFind[i])) {
-					i = i - ((int)(b / 2) + 1);
-					b = pow(2, k - iterator);
+				if (data > getKey(blockToFind[i])) {
+					i += ((int)(b / 2) + 1);
+					b = pow(2, l - iterator);
 				}
-				else if (data > getKey(blockToFind[i])) {
-					i += (int)(b / 2) + 1;
-					b = pow(2, k - iterator);
+				else if (data < getKey(blockToFind[i])) {
+					i -= ((int)(b / 2) + 1);
+					b = pow(2, l - iterator);
 				}
-				else if(data == getKey(blockToFind[i])) {
-					cout << i << endl;
-					cout << "We have found the element" << endl;
+				if (data == getKey(blockToFind[i])) {
+					return i;
 					break;
 				}
 			}
 		}
-		else if (data == getKey(blockToFind[i])){
-			cout << i << endl;
-			cout << "We have found the element" << endl;
-		}
-		else {
-			if (blockToFind.size() > pow(2, k)) {
-				int l = (int)logbase(blockToFind.size() - pow(2, k) + 1, 2);
-				i = blockToFind.size() + l - pow(2, l);
-				int iterator = 1;
-				int b = pow(2, l - iterator);
-				while (b != 0) {
-					iterator++;
-					if (data > getKey(blockToFind[i])) {
-						i += (int)(b / 2) + 1;
-						b = pow(2, l - iterator);
-					}
-					else if (data < getKey(blockToFind[i])) {
-						i -= ((int)(b / 2) + 1);
-						b = pow(2, l - iterator);
-					}
-					else if (data == getKey(blockToFind[i])) {
-						cout << i << endl;
-						cout << "We have found the element" << endl;
-						break;
-					}
-				}
-			}
+	}
+}
+void dataBase::findKey() {
+	cout << "Input the key you want to find" << endl;
+	int data;
+	cin >> data;
+	if (data < 0 || data >= currentElements) {
+		cout << "Unfortunately, this database do not have this element" << endl;;
+	}
+	else {
+		vector<string> blockToFind = index[data % 10];
+		int indexInBlock = Sharr(blockToFind, data);
+		if( indexInBlock!= -1){
+			cout << "We have found element, the position is: " << endl << indexInBlock << endl;
 		}
 	}
-
+}
+void dataBase::redoKey()
+{
 }
 
 void dataBase::UI()
@@ -229,7 +236,7 @@ void dataBase::UI()
 	int res;
 	int outRes = 1;
 	while (outRes != 0) {
-		cout << "Whad do you want to do? \n 1 - input key\n 2 - delete key \n 3 - find key" << endl;
+		cout << "Whad do you want to do? \n 1 - input key\n 2 - delete key \n 3 - find key \n 4 - redo key" << endl;
 		cin >> res;
 		switch (res) {
 		case 1:
@@ -240,6 +247,9 @@ void dataBase::UI()
 			break;
 		case 3:
 			findKey();
+			break;
+		case 4:
+			redoKey();
 			break;
 		default:
 			cout << "Unknown" << endl;

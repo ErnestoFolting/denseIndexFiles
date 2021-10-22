@@ -23,6 +23,7 @@ struct dataBase
 	void inputKey();
 	void deleteKey();
 	void findKey();
+	void redoKey();
 	void mainUpdate();
 	void indexUpdate();
 	void overflowUpdate();
