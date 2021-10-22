@@ -153,18 +153,6 @@ void dataBase::inputKey() {
 	currentElements++;
 }
 
-void dataBase::deleteKey() {
-	cout << "Input the key you want to delete" << endl;
-	int data;
-	cin >> data;
-	if (data < 0 || data >= currentElements) {
-		cout << "Unfortunately, this database do not have this element";
-	}
-	else {
-		vector<string> blockToDelete = index[data % 10];
-		 
-	}
-}
 int Sharr(vector<string> blockToFind, int data, int& comparison) {
 	if (blockToFind.size() == 0) {
 		return -1;
@@ -213,6 +201,47 @@ int Sharr(vector<string> blockToFind, int data, int& comparison) {
 			} while (data != getKey(blockToFind[i]));
 			return i;
 		}
+	}
+}
+void dataBase::deleteKey() {
+	cout << "Input the key you want to delete" << endl;
+	int data;
+	cin >> data;
+	if (data < 0) {
+		cout << "Unfortunately, this database do not have this element" << endl;;
+	}
+	else {
+		vector<string> blockToFind = index[data % 10];
+		int indComparison = 0;
+		int overComparison = 0;
+		int indexInBlock = Sharr(blockToFind, data, indComparison);
+		if (indexInBlock == -1) {
+			int indexInBlock = Sharr(overflow, data, overComparison);
+			if (indexInBlock == -1) {
+				cout << "Probably the element was deleted earlier(" << endl;
+			}
+			else {
+				cout << "We have deleted the element in overflow area " << endl;
+			}
+		}
+		else {
+			cout << "We have deleted the element in index area" << endl;
+			vector<vector<string>> newIndex(blocks);
+			for (int i = 0; i < index.size(); i++) {
+				for (int j = 0; j < index[i].size(); j++) {
+					if (getKey(index[i][j]) != data) {
+						newIndex[i].push_back(index[i][j]);
+					}
+				}
+			}
+			index = newIndex;
+			indexUpdate();
+			string temp = main[getMainIndex(blockToFind[indexInBlock])];
+			temp[temp.length() - 1] = '0';
+			main[getMainIndex(blockToFind[indexInBlock])] = temp;
+			mainUpdate();
+		}
+
 	}
 }
 void dataBase::findKey() {
