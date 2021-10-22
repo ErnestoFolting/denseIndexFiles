@@ -17,7 +17,6 @@ using namespace std;
 //	string temp;
 //	cout << "-----------------------Main area:-----------------------" << endl;
 //	while (inFile1 >> temp) {
-//		currentElements++;
 //		cout << temp << endl;
 //	}
 //	inFile1.close();

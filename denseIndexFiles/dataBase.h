@@ -13,7 +13,7 @@ struct dataBase
 	vector<string> overflow;
 	vector<string> main;
 	int numberValues = 90;
-	int numberInBlock = 10;
+	int numberInBlock = 95;
 	int blocks = 10;
 	int currentElements = 0;
 	void getIndex();
