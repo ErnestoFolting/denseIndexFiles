@@ -274,12 +274,18 @@ void dataBase::findKey() {
 				cout << "Probably the element was deleted(" << endl;
 			}
 			else {
-				cout << "We have found the element in overflow area, the data is: \n" << main[getMainIndex(overflow[indexInBlock])] << endl;
+				string temp = main[getMainIndex(overflow[indexInBlock])];
+				temp.erase(0, temp.find(",") + 1);
+				temp.erase(temp.find(","), temp.length() - temp.find(","));
+				cout << "We have found the element in overflow area, the data is: \n" << temp << endl;
 				cout << "The number of comparisons: " << indComparison + overComparison << endl;
 			}
 		}
 		else {
-			cout << "We have found the element in index area, the data is: \n" << main[getMainIndex(blockToFind[indexInBlock])] << endl;
+			string temp = main[getMainIndex(blockToFind[indexInBlock])];
+			temp.erase(0, temp.find(",")+1);
+			temp.erase(temp.find(","), temp.length() - temp.find(","));
+			cout << "We have found the element in index area, the data is: \n" <<temp << endl;
 			cout << "The number of comparisons: " << indComparison + overComparison << endl;
 		}
 	}
