@@ -221,11 +221,22 @@ void dataBase::deleteKey() {
 				cout << "Probably the element was deleted earlier(" << endl;
 			}
 			else {
+				string temp = main[getMainIndex(overflow[indexInBlock])];
+				temp[temp.length() - 1] = '0';
+				main[getMainIndex(overflow[indexInBlock])] = temp;
+				mainUpdate();
+				vector<string> newOverflow;
+				for (int i = 0; i < overflow.size(); i++) {
+					if (getKey(overflow[i]) != data) {
+						newOverflow.push_back(overflow[i]);
+					}
+				}
+				overflow = newOverflow;
+				overflowUpdate();
 				cout << "We have deleted the element in overflow area " << endl;
 			}
 		}
 		else {
-			cout << "We have deleted the element in index area" << endl;
 			vector<vector<string>> newIndex(blocks);
 			for (int i = 0; i < index.size(); i++) {
 				for (int j = 0; j < index[i].size(); j++) {
@@ -240,6 +251,7 @@ void dataBase::deleteKey() {
 			temp[temp.length() - 1] = '0';
 			main[getMainIndex(blockToFind[indexInBlock])] = temp;
 			mainUpdate();
+			cout << "We have deleted the element in index area" << endl;
 		}
 
 	}
