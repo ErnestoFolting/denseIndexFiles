@@ -125,6 +125,11 @@ int getKey(string temp) {
 	int key = stoi(temp.substr(0, comaPos + 1));
 	return key;
 }
+int getMainIndex(string temp) {
+	int comaPos = temp.find(",");
+	int index = stoi(temp.substr(comaPos + 1, temp.length() - comaPos));
+	return index;
+}
 
 void dataBase::inputKey() {
 	cout << "Input the data you want to add " << endl;
@@ -160,55 +165,53 @@ void dataBase::deleteKey() {
 		 
 	}
 }
-int Sharr(vector<string> blockToFind, int data) {
-	int k = (int)logbase(blockToFind.size(), 2);
-	int i = pow(2, k);
-	if (data < getKey(blockToFind[i])) {
-		int iterator = 1;
-		int b = pow(2, k - iterator);
-		while (data != getKey(blockToFind[i])) {
-			iterator++;
-			if (data < getKey(blockToFind[i])) {
-				i = i - ((int)(b / 2) + 1);
-				b = pow(2, k - iterator);
-			}
-			else if (data > getKey(blockToFind[i])) {
-				i += (int)(b / 2) + 1;
-				b = pow(2, k - iterator);
-			}
-			if (iterator >= blockToFind.size()) {
-				return -1;
-				break;
-			}
-		}
+int Sharr(vector<string> blockToFind, int data, int& comparison) {
+	if (blockToFind.size() == 0) {
+		return -1;
+	}
+	else {
+		int N = blockToFind.size();
+		int k = (int)logbase(N, 2);
+		int i = pow(2, k) - 1;
 		if (data == getKey(blockToFind[i])) {
 			return i;
 		}
-	}
-	else if (data == getKey(blockToFind[i])) {
-		return i;
-	}
-	else {
-		if (blockToFind.size() > pow(2, k)) {
-			int l = (int)logbase(blockToFind.size() - pow(2, k) + 1, 2);
-			i = blockToFind.size() + l - pow(2, l);
-			int iterator = 1;
-			int b = pow(2, l - iterator);
-			while (b != 0) {
-				iterator++;
-				if (data > getKey(blockToFind[i])) {
-					i += ((int)(b / 2) + 1);
-					b = pow(2, l - iterator);
-				}
-				else if (data < getKey(blockToFind[i])) {
+		else if (data < getKey(blockToFind[i])) {
+			int b = pow(2, k - 1);
+			comparison++;
+			do {
+				comparison++;
+				if (data < getKey(blockToFind[i])) {
 					i -= ((int)(b / 2) + 1);
-					b = pow(2, l - iterator);
+					b = b / 2;
 				}
-				if (data == getKey(blockToFind[i])) {
-					return i;
-					break;
+				else if (data > getKey(blockToFind[i])) {
+					i += ((int)(b / 2) + 1);
+					b = b / 2;
 				}
-			}
+				if (i >= N || i < 0 || comparison > N + 1)return-1;
+			} while (data != getKey(blockToFind[i]));
+			return i;
+		}
+		else if (data > getKey(blockToFind[i])) {
+			if (N <= pow(2, k))return-1;
+			int l = (int)logbase(N - pow(2, k) + 1, 2);
+			i = N + 1 - pow(2, l) - 1;
+			int b = pow(2, l - 1);
+			comparison++;
+			do {
+				comparison++;
+				if (data < getKey(blockToFind[i])) {
+					i -= ((int)(b / 2) + 1);
+					b = b / 2;
+				}
+				else if (data > getKey(blockToFind[i])) {
+					i += ((int)(b / 2) + 1);
+					b = b / 2;
+				}
+				if (i >= N || i < 0 || comparison > N + 1)return-1;
+			} while (data != getKey(blockToFind[i]));
+			return i;
 		}
 	}
 }
@@ -216,19 +219,66 @@ void dataBase::findKey() {
 	cout << "Input the key you want to find" << endl;
 	int data;
 	cin >> data;
-	if (data < 0 || data >= currentElements) {
+	if (data < 0) {
 		cout << "Unfortunately, this database do not have this element" << endl;;
 	}
 	else {
 		vector<string> blockToFind = index[data % 10];
-		int indexInBlock = Sharr(blockToFind, data);
-		if( indexInBlock!= -1){
-			cout << "We have found element, the position is: " << endl << indexInBlock << endl;
+		int indComparison = 0;
+		int overComparison = 0;
+		int indexInBlock = Sharr(blockToFind, data, indComparison);
+		if( indexInBlock == -1){
+			int indexInBlock = Sharr(overflow, data, overComparison);
+			if (indexInBlock == -1) {
+				cout << "Probably the element was deleted(" << endl;
+			}
+			else {
+				cout << "We have found the element in overflow area, the data is: \n" << main[getMainIndex(overflow[indexInBlock])] << endl;
+				cout << "The number of comparisons: " << indComparison + overComparison << endl;
+			}
+		}
+		else {
+			cout << "We have found the element in index area, the data is: \n" << main[getMainIndex(blockToFind[indexInBlock])] << endl;
+			cout << "The number of comparisons: " << indComparison + overComparison << endl;
 		}
 	}
 }
 void dataBase::redoKey()
 {
+	cout << "Input the key you want to redo" << endl;
+	int key;
+	cin >> key;
+	cout << "Input the data you want to past" << endl;
+	string data = "";
+	cin >> data;
+	if (key < 0) {
+		cout << "Unfortunately, this database do not have this element" << endl;;
+	}
+	else {
+		vector<string> blockToFind = index[key % 10];
+		int indComparison = 0;
+		int overComparison = 0;
+		int indexInBlock = Sharr(blockToFind, key, indComparison);
+		if (indexInBlock == -1) {
+			int indexInBlock = Sharr(overflow, key, overComparison);
+			if (indexInBlock == -1) {
+				cout << "Probably the element was deleted(" << endl;
+			}
+			else {
+				string newStr = to_string(getMainIndex(overflow[indexInBlock])) +"," + data + ","  +"1";
+				main[getMainIndex(overflow[indexInBlock])] = newStr;
+				mainUpdate();
+				cout << "We have changed the data of element" << endl;
+			}
+		}
+		else {
+			string newStr = to_string(getMainIndex(blockToFind[indexInBlock])) + "," + data + "," + "1";
+			main[getMainIndex(blockToFind[indexInBlock])] = newStr;
+			mainUpdate();
+			cout << "We have changed the data of element" << endl;
+		}
+	}
+	
 }
 
 void dataBase::UI()

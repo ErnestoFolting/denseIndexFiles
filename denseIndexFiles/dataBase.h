@@ -6,6 +6,7 @@
 #include <ctime>
 #include <vector>
 using namespace std;
+
 struct dataBase
 {
 	vector<vector<string>> index;
